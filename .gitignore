@@ -1,0 +1,9 @@
+proposal_docs/proposal.doc
+proposal_docs/proposal.docx
+proposal_docs/proposal.html
+*.log
+.tempmediaStorage/
+scratch/
+temp_profile/
+temp_profile_new/
+temp_profile_erd/
