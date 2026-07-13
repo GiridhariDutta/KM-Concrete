@@ -1,0 +1,1861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>K&M Concrete Construction - Estimating & PM Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0D0E12;
+      --sidebar-bg: #15181F;
+      --panel-bg: #1C1F26;
+      --input-bg: #14171D;
+      --border-color: #262A35;
+      --text-white: #E5E7EB;
+      --text-muted: #6B7280;
+      --text-light-muted: #9CA3AF;
+      --blue: #1E60B4;
+      --blue-light: #3B82F6;
+      --blue-gradient: linear-gradient(180deg, #1E60B4 0%, #0F3F96 100%);
+      --blue-pill: #242D3C;
+      --orange: #FF5C00;
+      --success-green: #10B981;
+      --warning-yellow: #F59E0B;
+    }
+
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg-dark);
+      color: var(--text-white);
+    }
+
+    body {
+      display: flex;
+    }
+
+    /* ── SIDEBAR ── */
+    aside {
+      width: 180px;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      padding-top: 0;
+      flex-shrink: 0;
+      height: 100%;
+    }
+
+    .nav-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 20px;
+      color: var(--text-light-muted);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s;
+    }
+
+    .nav-item svg {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      opacity: 0.7;
+    }
+
+    .nav-item:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .nav-item.active {
+      color: #fff;
+      background: var(--blue-pill);
+    }
+
+    .nav-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--blue);
+    }
+
+    /* ── MAIN CONTENT ── */
+    .main-container {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    /* Top Bar Header */
+    header {
+      height: 60px;
+      background: var(--sidebar-bg);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 24px;
+      flex-shrink: 0;
+    }
+
+    .header-logo {
+      display: flex;
+      align-items: center;
+    }
+
+    .logo-title {
+      font-weight: 700;
+      font-size: 13px;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-left: 0;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-size: 11px;
+      color: var(--text-light-muted);
+    }
+
+    .profile-section {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .profile-img {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #4B5563;
+      background-image: url('https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80');
+      background-size: cover;
+    }
+
+    /* ── PAGE VIEW SYSTEM ── */
+    .view-container {
+      display: none;
+      flex-grow: 1;
+      padding: 16px;
+      overflow: hidden;
+      height: 100%;
+    }
+
+    .view-container.active {
+      display: flex !important;
+    }
+
+    /* Dashboard Layout Grid (Estimator Page) */
+    .dashboard-grid {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template-columns: 2.2fr 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 16px;
+    }
+
+    /* Panels */
+    .panel {
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .panel-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-white);
+      margin-bottom: 12px;
+    }
+
+    /* Estimator Column */
+    .estimator-panel {
+      grid-row: span 2;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      justify-content: space-between;
+    }
+
+    .calculator-block {
+      background: rgba(0, 0, 0, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.01);
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      gap: 12px;
+      flex-grow: 1;
+      height: 48%;
+    }
+
+    .mix-col {
+      width: 130px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .mix-card {
+      background: var(--input-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 8px;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s;
+    }
+
+    .mix-card:hover {
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .mix-card.selected {
+      border-color: var(--blue-light);
+      background: rgba(30, 96, 180, 0.03);
+    }
+
+    .mix-card-title {
+      font-size: 10px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 2px;
+    }
+
+    .mix-card-desc {
+      font-size: 8px;
+      color: var(--text-muted);
+      line-height: 1.2;
+    }
+
+    .mix-radio {
+      position: absolute;
+      top: 8px; right: 8px;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      border: 1px solid var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mix-card.selected .mix-radio {
+      border-color: var(--blue-light);
+    }
+
+    .mix-card.selected .mix-radio::after {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--blue-light);
+    }
+
+    /* Calculator inputs */
+    .calc-details-col {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      overflow: hidden;
+    }
+
+    .calc-sub-title {
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--text-light-muted);
+      margin-bottom: 2px;
+    }
+
+    .slider-container {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 9px;
+      color: var(--text-light-muted);
+    }
+
+    .slider-val {
+      color: #fff;
+      font-weight: 700;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 4px;
+      background: var(--border-color);
+      border-radius: 2px;
+      outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--blue-light);
+      cursor: pointer;
+    }
+
+    .slider-limits {
+      display: flex;
+      justify-content: space-between;
+      font-size: 8px;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+
+    .input-grid-two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .input-grid-three {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+
+    .small-input-box {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .small-input-box label {
+      font-size: 8px;
+      color: var(--text-light-muted);
+    }
+
+    .input-with-unit {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-with-unit input {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 4px 16px 4px 6px;
+      color: #fff;
+      font-size: 10px;
+      outline: none;
+    }
+
+    .input-with-unit span {
+      position: absolute;
+      right: 4px;
+      font-size: 8px;
+      color: var(--text-muted);
+    }
+
+    .cost-input-box {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .cost-input-box label {
+      font-size: 8px;
+      color: var(--text-light-muted);
+    }
+
+    .cost-input-box input {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 4px 6px;
+      color: #fff;
+      font-size: 10px;
+      outline: none;
+    }
+
+    /* Blue Total Display */
+    .total-col {
+      width: 140px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .total-display-card {
+      background: var(--blue-gradient);
+      border-radius: 6px;
+      padding: 10px 8px;
+      text-align: center;
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(15, 63, 150, 0.25);
+    }
+
+    .total-title {
+      font-size: 8px;
+      text-transform: uppercase;
+      font-weight: 700;
+      opacity: 0.8;
+    }
+
+    .total-amount {
+      font-size: 16px;
+      font-weight: 800;
+      margin: 4px 0 8px;
+    }
+
+    .total-breakdown {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      font-size: 8px;
+      text-align: left;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      padding-top: 6px;
+    }
+
+    .total-breakdown-row {
+      display: flex;
+      justify-content: space-between;
+      opacity: 0.9;
+    }
+
+    .btn-report {
+      background: var(--blue);
+      border: none;
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 6px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-report:hover {
+      background: var(--blue-light);
+    }
+
+    /* Column 2: Workflow Stepper */
+    .workflow-stepper {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 6px;
+      overflow: hidden;
+    }
+
+    .step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .step-item:not(:last-child)::before {
+      content: '';
+      position: absolute;
+      left: 5px;
+      top: 12px;
+      bottom: -14px;
+      width: 1px;
+      background: #2D3139;
+    }
+
+    .step-item.completed:not(:last-child)::before {
+      background: var(--blue);
+    }
+
+    .step-icon {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--input-bg);
+      border: 1.5px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+      transition: all 0.2s;
+    }
+
+    .step-item:hover .step-icon {
+      border-color: var(--blue-light);
+    }
+
+    .step-item.completed .step-icon {
+      background: var(--blue);
+      border-color: var(--blue);
+    }
+
+    .step-item.active .step-icon {
+      background: var(--panel-bg);
+      border-color: var(--blue);
+    }
+
+    .step-icon svg {
+      width: 6px;
+      height: 6px;
+      fill: none;
+      stroke: #fff;
+      stroke-width: 3;
+    }
+
+    .step-content {
+      flex-grow: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 9px;
+    }
+
+    .step-title {
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .step-item.completed .step-title,
+    .step-item.active .step-title {
+      color: #fff;
+    }
+
+    .step-date {
+      color: var(--text-muted);
+      font-size: 8px;
+    }
+
+    .step-progress-bar {
+      height: 3px;
+      background: var(--border-color);
+      border-radius: 1px;
+      width: 50px;
+      overflow: hidden;
+      margin-left: 6px;
+    }
+
+    .step-progress-fill {
+      height: 100%;
+      background: var(--blue-light);
+      width: 85%;
+      transition: width 0.3s ease;
+    }
+
+    /* Column 2 Bottom: Project Progress Charts */
+    .chart-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 4px;
+      flex-grow: 1;
+      overflow: hidden;
+    }
+
+    .bar-chart-visual {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      height: 55px;
+      padding: 0 10px;
+      border-left: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+      position: relative;
+    }
+
+    .y-axis-labels {
+      position: absolute;
+      left: -20px;
+      top: 0;
+      bottom: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      font-size: 8px;
+      color: var(--text-muted);
+      text-align: right;
+      width: 16px;
+    }
+
+    .chart-bar {
+      width: 8px;
+      background: var(--blue);
+      border-radius: 1px 1px 0 0;
+      transition: height 0.3s ease;
+    }
+
+    .line-chart-visual {
+      height: 30px;
+      position: relative;
+    }
+
+    /* Column 3: Audit Log */
+    .audit-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow: hidden;
+      flex-grow: 1;
+    }
+
+    .audit-item {
+      display: flex;
+      gap: 8px;
+      font-size: 9px;
+      line-height: 1.3;
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .audit-dot-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    .audit-dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--blue);
+      margin-top: 3px;
+    }
+
+    .audit-dot-col::after {
+      content: '';
+      position: absolute;
+      top: 7px;
+      bottom: -16px;
+      width: 1px;
+      background: #2D3139;
+    }
+
+    .audit-item:last-child .audit-dot-col::after {
+      display: none;
+    }
+
+    .audit-body {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .audit-time {
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .audit-desc {
+      color: var(--text-light-muted);
+    }
+
+    .audit-desc strong {
+      color: #fff;
+    }
+
+    /* Active Project Details Card style */
+    .client-details-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      font-size: 10px;
+      color: var(--text-light-muted);
+      margin-top: 4px;
+    }
+
+    .client-details-row {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      padding-bottom: 6px;
+    }
+
+    .client-details-row span:first-child {
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .client-details-row span:last-child {
+      color: #fff;
+      font-weight: 500;
+      text-align: right;
+    }
+
+    .btn-edit-project {
+      margin-top: auto;
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-light-muted);
+      font-size: 8px;
+      font-weight: 700;
+      padding: 6px;
+      border-radius: 4px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .btn-edit-project:hover {
+      border-color: var(--blue-light);
+      color: #fff;
+      background: rgba(30, 96, 180, 0.05);
+    }
+
+    /* ── WORKFLOWS VIEW ── */
+    .workflows-grid {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 16px;
+    }
+
+    .workflow-card {
+      background: rgba(0, 0, 0, 0.15);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .workflow-project-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .workflow-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .badge {
+      font-size: 8px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .badge-progress {
+      background: rgba(30, 96, 180, 0.15);
+      color: var(--blue-light);
+      border: 1px solid rgba(30, 96, 180, 0.3);
+    }
+
+    .badge-proposal {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--warning-yellow);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .badge-success {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success-green);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .workflow-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      font-size: 10px;
+    }
+
+    .workflow-meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .workflow-meta-item label {
+      color: var(--text-muted);
+      font-size: 8px;
+      text-transform: uppercase;
+    }
+
+    .workflow-meta-item span {
+      color: var(--text-light-muted);
+      font-weight: 500;
+    }
+
+    .progress-bar-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 4px;
+      font-size: 9px;
+      color: var(--text-light-muted);
+    }
+
+    .full-progress-bar {
+      flex-grow: 1;
+      height: 6px;
+      background: var(--input-bg);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .full-progress-fill {
+      height: 100%;
+      background: var(--blue-light);
+    }
+
+    /* Stats Panel Card */
+    .stat-card-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .stat-card {
+      background: var(--input-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .stat-label {
+      font-size: 9px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .stat-number {
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    /* ── CLIENTS VIEW ── */
+    .clients-header-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .search-input-box {
+      background: var(--input-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 6px 12px;
+      color: #fff;
+      font-size: 11px;
+      outline: none;
+      width: 240px;
+    }
+
+    .btn-action-primary {
+      background: var(--blue);
+      border: none;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .client-list-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10px;
+      text-align: left;
+    }
+
+    .client-list-table th, .client-list-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .client-list-table th {
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 8px;
+    }
+
+    .client-list-table tr:hover {
+      background: rgba(255, 255, 255, 0.01);
+    }
+
+    .client-avatar {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: var(--blue-pill);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 8px;
+      font-weight: 700;
+      color: var(--blue-light);
+    }
+
+    /* ── AUDIT LOG TABLE ── */
+    .audit-log-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10px;
+      text-align: left;
+    }
+
+    .audit-log-table th, .audit-log-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .audit-log-table th {
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 8px;
+    }
+
+    .audit-log-table tr:hover {
+      background: rgba(255, 255, 255, 0.01);
+    }
+
+    .audit-badge-success {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success-green);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .audit-badge-warning {
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--warning-yellow);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+
+    .audit-badge-blue {
+      background: rgba(30, 96, 180, 0.1);
+      color: var(--blue-light);
+      border: 1px solid rgba(30, 96, 180, 0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Left Sidebar Menu -->
+  <aside>
+    <!-- Brand Logo Text Container (Top Left) -->
+    <div style="padding: 12px 20px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; height: 60px; background: var(--sidebar-bg); flex-shrink: 0; gap: 8px;">
+      <span style="font-weight: 800; font-size: 28px; color: var(--blue-light); letter-spacing: -1px; text-shadow: 0 0 10px rgba(59, 130, 246, 0.2);">K&M</span>
+      <span style="font-weight: 700; font-size: 9px; color: #fff; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.2;">Concrete<br>Construction</span>
+    </div>
+
+    <div class="nav-menu" style="margin-top: 10px;">
+      <div class="nav-item active" id="nav-estimator" onclick="navigate('estimator')">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+        Estimator
+      </div>
+      <div class="nav-item" id="nav-workflows" onclick="navigate('workflows')">
+        <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M16 2v4M8 2v4M2 10h20"/></svg>
+        Workflows
+      </div>
+      <div class="nav-item" id="nav-clients" onclick="navigate('clients')">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Clients
+      </div>
+      <div class="nav-item" id="nav-reports" onclick="navigate('reports')">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+        Reports
+      </div>
+      <div class="nav-item" id="nav-audit" onclick="navigate('audit')">
+        <svg viewBox="0 0 24 24"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 6v6l4 2"/></svg>
+        Audit Log
+      </div>
+    </div>
+  </aside>
+
+  <!-- Right Main Viewport -->
+  <div class="main-container">
+    <header>
+      <div class="header-logo">
+        <span class="logo-title" id="page-title" style="margin-left: 0; font-size: 14px; color: var(--text-white);">Estimating & Project Management Dashboard</span>
+      </div>
+      <div class="header-right">
+        <span>Wed, Oct 25, 2023 | 10:45 AM</span>
+        <div class="profile-section">
+          <div class="profile-img"></div>
+          <span>Alex R. (Estimator)</span>
+          <svg style="width:8px; height:8px; stroke: var(--text-light-muted); fill: none; stroke-width: 3;" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+      </div>
+    </header>
+
+    <!-- 1. ESTIMATOR PAGE VIEW -->
+    <div class="view-container active" id="view-estimator">
+      <div class="dashboard-grid">
+        <!-- Col 1: Calculator Panel -->
+        <div class="panel estimator-panel">
+          <div class="panel-title">Interactive Estimate Calculator</div>
+          
+          <!-- Calculator Row 1 -->
+          <div class="calculator-block">
+            <div class="mix-col">
+              <div class="calc-sub-title">1. Concrete Mix Selection</div>
+              <div class="mix-card" onclick="selectMix(1, 110)">
+                <div class="mix-radio"></div>
+                <div class="mix-card-title">Standard Mix</div>
+                <div class="mix-card-desc">4500 PSI</div>
+              </div>
+              <div class="mix-card selected" onclick="selectMix(1, 135)">
+                <div class="mix-radio"></div>
+                <div class="mix-card-title">High-Strength Mix</div>
+                <div class="mix-card-desc">4500 PSI<br>Agg: 3/4"</div>
+              </div>
+              <div class="mix-card" onclick="selectMix(1, 150)">
+                <div class="mix-radio"></div>
+                <div class="mix-card-title">Fiber-Reinforced</div>
+                <div class="mix-card-desc">Fiber mix addition</div>
+              </div>
+            </div>
+            
+            <div class="calc-details-col">
+              <div class="calc-sub-title">2. Estimate Details</div>
+              
+              <div class="slider-container">
+                <div class="slider-header">
+                  <span>Volume Slider</span>
+                  <span class="slider-val" id="vol-val-1">38.5 yd³</span>
+                </div>
+                <input type="range" id="vol-range-1" min="1" max="200" value="38.5" step="0.1" oninput="updateVol(1, this.value, true)">
+                <div class="slider-limits">
+                  <span>0</span>
+                  <span>0-200 yd³</span>
+                </div>
+              </div>
+              
+              <div class="input-grid-two">
+                <div class="small-input-box">
+                  <label>Length</label>
+                  <div class="input-with-unit">
+                    <input type="text" id="len-1" value="50" oninput="onDimChange(1)">
+                    <span>ft</span>
+                  </div>
+                </div>
+                <div class="small-input-box">
+                  <label>Width</label>
+                  <div class="input-with-unit">
+                    <input type="text" id="wid-1" value="30" oninput="onDimChange(1)">
+                    <span>ft</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="small-input-box" style="margin-top: 4px;">
+                <label>Depth</label>
+                <div class="input-with-unit">
+                  <input type="text" id="dep-1" value="6" oninput="onDimChange(1)">
+                  <span>in</span>
+                </div>
+              </div>
+              
+              <div class="cost-input-box" style="margin-top: 4px;">
+                <label>Cost/yd³</label>
+                <input type="text" id="cost-1" value="$135.00" readonly>
+              </div>
+            </div>
+            
+            <div class="total-col">
+              <div class="total-display-card">
+                <div class="total-title">ESTIMATE TOTAL</div>
+                <div class="total-amount" id="tot-amount-1">$5,197.50</div>
+                <div class="total-breakdown">
+                  <div class="total-breakdown-row">
+                    <span>Materials:</span>
+                    <span id="tot-mat-1">$4,590.00</span>
+                  </div>
+                  <div class="total-breakdown-row">
+                    <span>Labor:</span>
+                    <span id="tot-lab-1">$450.00</span>
+                  </div>
+                  <div class="total-breakdown-row">
+                    <span>Equip:</span>
+                    <span id="tot-eq-1">$157.50</span>
+                  </div>
+                </div>
+              </div>
+              <button class="btn-report" onclick="triggerSave(1)">Generate Estimate Report</button>
+            </div>
+          </div>
+
+          <!-- Calculator Row 2 -->
+          <div class="calculator-block">
+            <div class="mix-col">
+              <div class="calc-sub-title">1. Concrete Mix Selection</div>
+              <div class="mix-card" onclick="selectMix(2, 110)">
+                <div class="mix-radio"></div>
+                <div class="mix-card-title">Standard Mix</div>
+                <div class="mix-card-desc">4500 PSI</div>
+              </div>
+              <div class="mix-card selected" onclick="selectMix(2, 135)">
+                <div class="mix-radio"></div>
+                <div class="mix-card-title">High-Strength Mix</div>
+                <div class="mix-card-desc">4500 PSI<br>Agg: 3/4"</div>
+              </div>
+              <div class="mix-card" onclick="selectMix(2, 150)">
+                <div class="mix-radio"></div>
+                <div class="mix-card-title">Fiber-Reinforced</div>
+                <div class="mix-card-desc">Fiber mix addition</div>
+              </div>
+            </div>
+            
+            <div class="calc-details-col">
+              <div class="calc-sub-title">2. Estimate Details</div>
+              
+              <div class="slider-container">
+                <div class="slider-header">
+                  <span>Volume</span>
+                  <span class="slider-val" id="vol-val-2">38.5 yd³</span>
+                </div>
+                <input type="range" id="vol-range-2" min="1" max="200" value="38.5" step="0.1" oninput="updateVol(2, this.value, true)">
+                <div class="slider-limits">
+                  <span>0</span>
+                  <span>0-200 yd³</span>
+                </div>
+              </div>
+              
+              <div class="input-grid-three">
+                <div class="small-input-box">
+                  <label>Length</label>
+                  <div class="input-with-unit">
+                    <input type="text" id="len-2" value="50" oninput="onDimChange(2)">
+                    <span>ft</span>
+                  </div>
+                </div>
+                <div class="small-input-box">
+                  <label>Width</label>
+                  <div class="input-with-unit">
+                    <input type="text" id="wid-2" value="30" oninput="onDimChange(2)">
+                    <span>ft</span>
+                  </div>
+                </div>
+                <div class="small-input-box">
+                  <label>Depth</label>
+                  <div class="input-with-unit">
+                    <input type="text" id="dep-2" value="6" oninput="onDimChange(2)">
+                    <span>in</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="cost-input-box" style="margin-top: 4px;">
+                <label>Cost/yd³</label>
+                <input type="text" id="cost-2" value="$135.00" readonly>
+              </div>
+            </div>
+            
+            <div class="total-col">
+              <div class="total-display-card" style="position: relative; padding-bottom: 14px;">
+                <div class="total-title">ESTIMATE TOTAL</div>
+                <div class="total-amount" id="tot-amount-2">$5,197.50</div>
+                <div class="total-breakdown">
+                  <div class="total-breakdown-row">
+                    <span>Materials:</span>
+                    <span id="tot-mat-2">$4,590.00</span>
+                  </div>
+                  <div class="total-breakdown-row">
+                    <span>Labor:</span>
+                    <span id="tot-lab-2">$450.00</span>
+                  </div>
+                  <div class="total-breakdown-row">
+                    <span>Equip:</span>
+                    <span id="tot-eq-2">$157.50</span>
+                  </div>
+                </div>
+                <svg style="width: 8px; height: 8px; fill: none; stroke: #fff; stroke-width: 3; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%);" viewBox="0 0 24 24"><path d="M18 15l-6-6-6 6"/></svg>
+              </div>
+              <button class="btn-report" onclick="triggerSave(2)">Generate Estimate Report</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Col 2 Top: Workflow Tracker -->
+        <div class="panel">
+          <div class="panel-title" style="margin-bottom: 6px;">Project Workflow Tracker</div>
+          <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 2px;">Project: Central Warehouse Expansion</div>
+          <div style="background: rgba(30, 96, 180, 0.15); border: 1px solid rgba(30, 96, 180, 0.25); color: var(--blue-light); font-size: 8px; font-weight: 700; width: fit-content; padding: 1px 6px; border-radius: 3px; margin-bottom: 10px;">In Progress</div>
+          
+          <div class="workflow-stepper" id="workflow-stepper-list">
+            <div class="step-item completed" onclick="setWorkflowStep(1)">
+              <div class="step-icon"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+              <div class="step-content"><span class="step-title">1. Start</span><span class="step-date">Oct 12</span></div>
+            </div>
+            <div class="step-item completed" onclick="setWorkflowStep(2)">
+              <div class="step-icon"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+              <div class="step-content"><span class="step-title">2. Site Prep</span><span class="step-date">Oct 18</span></div>
+            </div>
+            <div class="step-item active" onclick="setWorkflowStep(3)">
+              <div class="step-icon"><div style="width: 4px; height: 4px; border-radius: 50%; background: var(--blue);"></div></div>
+              <div class="step-content">
+                <span class="step-title">3. Estimating</span>
+                <div style="display: flex; align-items: center;">
+                  <span class="step-date" id="step-percentage">85%</span>
+                  <div class="step-progress-bar"><div class="step-progress-fill" id="step-fill-bar"></div></div>
+                </div>
+              </div>
+            </div>
+            <div class="step-item" onclick="setWorkflowStep(4)">
+              <div class="step-icon"></div>
+              <div class="step-content"><span class="step-title">4. Proposal</span><span class="step-date">Upcoming</span></div>
+            </div>
+            <div class="step-item" onclick="setWorkflowStep(5)">
+              <div class="step-icon"></div>
+              <div class="step-content"><span class="step-title">5. Scheduling</span><span class="step-date">Upcoming</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Col 3 Top: Audit Log -->
+        <div class="panel">
+          <div class="panel-title" style="margin-bottom: 2px;">Recent Audit Log</div>
+          <div style="color: var(--text-muted); font-size: 10px; margin-bottom: 10px;">Recent Activity</div>
+          
+          <div class="audit-list" id="audit-logs-container-1">
+            <div class="audit-item">
+              <div class="audit-dot-col"><div class="audit-dot"></div></div>
+              <div class="audit-body">
+                <div class="audit-time">Oct 25, 10:42 AM</div>
+                <div class="audit-desc"><strong>Alex R.</strong> updated Est. #1455 (Volume changed)</div>
+              </div>
+            </div>
+            <div class="audit-item">
+              <div class="audit-dot-col"><div class="audit-dot" style="background:#4b5563;"></div></div>
+              <div class="audit-body">
+                <div class="audit-time">Oct 24, 2:15 PM</div>
+                <div class="audit-desc"><strong>Sarah M.</strong> finalized Mix Design (Est. #1450)</div>
+              </div>
+            </div>
+            <div class="audit-item">
+              <div class="audit-dot-col"><div class="audit-dot" style="background:#4b5563;"></div></div>
+              <div class="audit-body">
+                <div class="audit-time">Oct 23, 9:01 AM</div>
+                <div class="audit-desc"><strong>Alex R.</strong> created Est. #1455 (Warehouse Ext.)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Col 2 Bottom: Progress Graph -->
+        <div class="panel">
+          <div class="panel-title" style="margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;">
+            <span>Project Progress</span>
+            <span style="color: var(--blue-light); font-size: 10px; font-weight: 700;" id="overall-progress-title">85% Complete</span>
+          </div>
+          
+          <div class="chart-container">
+            <div class="bar-chart-visual" id="bar-chart-container">
+              <div class="y-axis-labels"><span>100%</span><span>80%</span><span>60%</span><span>40%</span><span>20%</span><span>0</span></div>
+              <div style="width: 20px;"></div>
+              <div class="chart-bar" style="height: 25%;"></div>
+              <div class="chart-bar" style="height: 70%;"></div>
+              <div class="chart-bar" style="height: 50%;"></div>
+              <div class="chart-bar" style="height: 65%;"></div>
+              <div class="chart-bar" style="height: 75%;"></div>
+              <div class="chart-bar" style="height: 85%;"></div>
+              <div class="chart-bar" style="height: 55%;"></div>
+              <div class="chart-bar" style="height: 65%;"></div>
+            </div>
+            <div class="line-chart-visual">
+              <svg viewBox="0 0 100 20" style="width: 100%; height: 100%; margin-top: 4px;">
+                <path d="M0,16 Q15,3 30,11 T60,3 T90,16" fill="none" stroke="var(--blue-light)" stroke-width="1.2" />
+                <circle cx="90" cy="16" r="1.2" fill="var(--blue-light)" />
+                <path d="M0,16 Q15,3 30,11 T60,3 T90,16 L90,20 L0,20 Z" fill="rgba(30, 96, 180, 0.08)" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Col 3 Bottom: Client & Project Details Panel -->
+        <div class="panel">
+          <div class="panel-title" style="margin-bottom: 2px;">Active Project Details</div>
+          <div style="color: var(--text-muted); font-size: 10px; margin-bottom: 12px;">Client & Location Info</div>
+          
+          <div class="client-details-grid">
+            <div class="client-details-row"><span>Client Owner</span><span>Andy Kooiker</span></div>
+            <div class="client-details-row"><span>Company</span><span>K&M Concrete Construction Inc</span></div>
+            <div class="client-details-row"><span>Location</span><span>Edgerton, MN (Edgerton Office)</span></div>
+            <div class="client-details-row"><span>HR Manager</span><span>Kristi Eshuis</span></div>
+            <div class="client-details-row"><span>Contact Phone</span><span>+1 (507) 442-4855</span></div>
+            <div class="client-details-row"><span>Email</span><span>andy@kmconcreteinc.com</span></div>
+          </div>
+          <button class="btn-edit-project" onclick="editProjectAlert()">Edit Master Project Data</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. WORKFLOWS PAGE VIEW -->
+    <div class="view-container" id="view-workflows">
+      <div class="workflows-grid">
+        <div class="panel" style="gap: 16px;">
+          <div class="panel-title" style="margin-bottom: 0;">Active Project Pipelines</div>
+          
+          <!-- Project 1 -->
+          <div class="workflow-card">
+            <div class="workflow-project-header">
+              <span class="workflow-title">Central Warehouse Expansion (Warehouse Foundation)</span>
+              <span class="badge badge-progress">Estimating (85%)</span>
+            </div>
+            <div class="workflow-meta-grid">
+              <div class="workflow-meta-item"><label>Client</label><span>Andy Kooiker</span></div>
+              <div class="workflow-meta-item"><label>Target Volume</label><span>38.5 yd³</span></div>
+              <div class="workflow-meta-item"><label>Last Activity</label><span>Oct 25, 10:42 AM</span></div>
+            </div>
+            <div class="progress-bar-wrapper">
+              <div class="full-progress-bar"><div class="full-progress-fill" style="width: 85%;"></div></div>
+              <span>85%</span>
+            </div>
+          </div>
+
+          <!-- Project 2 -->
+          <div class="workflow-card">
+            <div class="workflow-project-header">
+              <span class="workflow-title">Sioux Falls Commercial Plaza (Parking Slab)</span>
+              <span class="badge badge-proposal">Proposal Sent</span>
+            </div>
+            <div class="workflow-meta-grid">
+              <div class="workflow-meta-item"><label>Client</label><span>Sarah Jenkins</span></div>
+              <div class="workflow-meta-item"><label>Target Volume</label><span>120.0 yd³</span></div>
+              <div class="workflow-meta-item"><label>Last Activity</label><span>Oct 24, 2:15 PM</span></div>
+            </div>
+            <div class="progress-bar-wrapper">
+              <div class="full-progress-bar"><div class="full-progress-fill" style="width: 95%; background: var(--warning-yellow);"></div></div>
+              <span>95%</span>
+            </div>
+          </div>
+
+          <!-- Project 3 -->
+          <div class="workflow-card">
+            <div class="workflow-project-header">
+              <span class="workflow-title">Residential Flatwork (Driveway & Sidewalk)</span>
+              <span class="badge badge-success">Completed</span>
+            </div>
+            <div class="workflow-meta-grid">
+              <div class="workflow-meta-item"><label>Client</label><span>Kristi Eshuis</span></div>
+              <div class="workflow-meta-item"><label>Target Volume</label><span>15.0 yd³</span></div>
+              <div class="workflow-meta-item"><label>Last Activity</label><span>Oct 22, 11:30 AM</span></div>
+            </div>
+            <div class="progress-bar-wrapper">
+              <div class="full-progress-bar"><div class="full-progress-fill" style="width: 100%; background: var(--success-green);"></div></div>
+              <span>100%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right column statistics -->
+        <div class="panel" style="gap: 16px;">
+          <div class="panel-title" style="margin-bottom: 0;">Workflow Statistics</div>
+          <div class="stat-card-row">
+            <div class="stat-card">
+              <span class="stat-label">Total Projects</span>
+              <span class="stat-number">12 Active</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Pipeline Value</span>
+              <span class="stat-number">$184,250.00</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Completed (Month)</span>
+              <span class="stat-number" style="color: var(--success-green);">18 Projects</span>
+            </div>
+          </div>
+          <button class="btn-report" style="margin-top: auto; font-size: 11px; padding: 10px;" onclick="alert('Creating new estimating project...')">+ Create New Estimating Project</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. CLIENTS VIEW -->
+    <div class="view-container" id="view-clients">
+      <div class="panel" style="width: 100%; height: 100%;">
+        <div class="clients-header-actions">
+          <div class="panel-title" style="margin-bottom: 0;">Clients Directory</div>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" placeholder="Search K&M Concrete clients..." class="search-input-box">
+            <button class="btn-action-primary" onclick="alert('Client entry database module loaded')">+ Add Client</button>
+          </div>
+        </div>
+        
+        <div style="overflow-y: auto; flex-grow: 1;">
+          <table class="client-list-table">
+            <thead>
+              <tr>
+                <th style="width: 50px;"></th>
+                <th>Client / Company</th>
+                <th>Designation</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Location</th>
+                <th>Active Estimations</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><div class="client-avatar">AK</div></td>
+                <td><strong>Andy Kooiker</strong><br><span style="color: var(--text-muted);">K&M Concrete Construction Inc</span></td>
+                <td>Owner / Principal</td>
+                <td>andy@kmconcreteinc.com</td>
+                <td>+1 (507) 442-4855</td>
+                <td>Edgerton, MN</td>
+                <td><span class="badge badge-progress">2 Active</span></td>
+              </tr>
+              <tr>
+                <td><div class="client-avatar">KE</div></td>
+                <td><strong>Kristi Eshuis</strong><br><span style="color: var(--text-muted);">K&M Concrete Construction Inc</span></td>
+                <td>HR Manager</td>
+                <td>kristi@kmconcreteinc.com</td>
+                <td>+1 (507) 442-4855</td>
+                <td>Edgerton, MN</td>
+                <td><span class="badge badge-success">1 Completed</span></td>
+              </tr>
+              <tr>
+                <td><div class="client-avatar">SJ</div></td>
+                <td><strong>Sarah Jenkins</strong><br><span style="color: var(--text-muted);">Midwest Builders</span></td>
+                <td>Project Manager</td>
+                <td>sjenkins@midwestbuilders.com</td>
+                <td>+1 (605) 555-0199</td>
+                <td>Sioux Falls, SD</td>
+                <td><span class="badge badge-proposal">1 Proposal</span></td>
+              </tr>
+              <tr>
+                <td><div class="client-avatar">JD</div></td>
+                <td><strong>John Davis</strong><br><span style="color: var(--text-muted);">Davis Development Co</span></td>
+                <td>Estimating Lead</td>
+                <td>jdavis@davisdev.com</td>
+                <td>+1 (612) 555-2244</td>
+                <td>Minneapolis, MN</td>
+                <td><span style="color: var(--text-muted);">0 Active</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. REPORTS VIEW -->
+    <div class="view-container" id="view-reports">
+      <div class="panel" style="width: 100%; height: 100%;">
+        <div class="clients-header-actions">
+          <div class="panel-title" style="margin-bottom: 0;">Estimate Report Log</div>
+          <button class="btn-action-primary" onclick="navigate('estimator')">Generate New Estimate</button>
+        </div>
+
+        <div style="overflow-y: auto; flex-grow: 1;">
+          <table class="client-list-table">
+            <thead>
+              <tr>
+                <th>Report ID</th>
+                <th>Project Name</th>
+                <th>Client Company</th>
+                <th>Volume (yd³)</th>
+                <th>Estimate Total</th>
+                <th>Operator</th>
+                <th>Generated Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>#EST-1455</strong></td>
+                <td>Central Warehouse Expansion</td>
+                <td>K&M Concrete Construction Inc</td>
+                <td>38.5 yd³</td>
+                <td style="color: var(--blue-light); font-weight: 700;">$5,197.50</td>
+                <td>Alex R.</td>
+                <td>Oct 25, 2023 10:45 AM</td>
+                <td>
+                  <button class="btn-action-primary" style="padding: 2px 8px; font-size: 8px;" onclick="alert('Downloading Estimate PDF...')">PDF</button>
+                  <button class="btn-action-primary" style="padding: 2px 8px; font-size: 8px; background:transparent; border:1px solid var(--border-color); color:var(--text-light-muted);" onclick="alert('Exporting CSV...')">Excel</button>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>#EST-1450</strong></td>
+                <td>Sioux Falls Parking Lot Slab</td>
+                <td>Midwest Builders</td>
+                <td>120.0 yd³</td>
+                <td style="color: var(--blue-light); font-weight: 700;">$16,800.00</td>
+                <td>Sarah M.</td>
+                <td>Oct 24, 2023 02:15 PM</td>
+                <td>
+                  <button class="btn-action-primary" style="padding: 2px 8px; font-size: 8px;" onclick="alert('Downloading Estimate PDF...')">PDF</button>
+                  <button class="btn-action-primary" style="padding: 2px 8px; font-size: 8px; background:transparent; border:1px solid var(--border-color); color:var(--text-light-muted);" onclick="alert('Exporting CSV...')">Excel</button>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>#EST-1448</strong></td>
+                <td>Residential Driveway & Curb</td>
+                <td>K&M Concrete Construction Inc</td>
+                <td>15.0 yd³</td>
+                <td style="color: var(--blue-light); font-weight: 700;">$2,100.00</td>
+                <td>Alex R.</td>
+                <td>Oct 22, 2023 11:30 AM</td>
+                <td>
+                  <button class="btn-action-primary" style="padding: 2px 8px; font-size: 8px;" onclick="alert('Downloading Estimate PDF...')">PDF</button>
+                  <button class="btn-action-primary" style="padding: 2px 8px; font-size: 8px; background:transparent; border:1px solid var(--border-color); color:var(--text-light-muted);" onclick="alert('Exporting CSV...')">Excel</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. AUDIT LOG VIEW -->
+    <div class="view-container" id="view-audit">
+      <div class="panel" style="width: 100%; height: 100%;">
+        <div class="clients-header-actions">
+          <div class="panel-title" style="margin-bottom: 0;">Audit History & System Log</div>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" placeholder="Filter audit trail..." class="search-input-box" style="width: 200px;">
+            <button class="btn-action-primary" style="background:transparent; border:1px solid var(--border-color); color:var(--text-light-muted);" onclick="alert('Exporting audit log database...')">Export CSV Log</button>
+          </div>
+        </div>
+
+        <div style="overflow-y: auto; flex-grow: 1;">
+          <table class="audit-log-table">
+            <thead>
+              <tr>
+                <th>Timestamp</th>
+                <th>Operator</th>
+                <th>Activity Group</th>
+                <th>Action Details</th>
+                <th>Record ID</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="full-audit-table-body">
+              <tr>
+                <td>Oct 25, 2023 10:45 AM</td>
+                <td><strong>Alex R.</strong></td>
+                <td><span class="badge audit-badge-blue">Report Gen</span></td>
+                <td>Generated Concrete Estimate Report (38.5 yd³ @ $5,197.50)</td>
+                <td>EST-1455</td>
+                <td><span class="badge audit-badge-success">Success</span></td>
+              </tr>
+              <tr>
+                <td>Oct 25, 2023 10:42 AM</td>
+                <td><strong>Alex R.</strong></td>
+                <td><span class="badge audit-badge-warning">Data Update</span></td>
+                <td>Updated concrete depth value to 6.0 inches (spillage factor calculated)</td>
+                <td>EST-1455</td>
+                <td><span class="badge audit-badge-success">Success</span></td>
+              </tr>
+              <tr>
+                <td>Oct 24, 2023 02:15 PM</td>
+                <td><strong>Sarah M.</strong></td>
+                <td><span class="badge audit-badge-blue">Mix Select</span></td>
+                <td>Finalized concrete mix selection: High-Strength Mix 4500 PSI</td>
+                <td>EST-1450</td>
+                <td><span class="badge audit-badge-success">Success</span></td>
+              </tr>
+              <tr>
+                <td>Oct 23, 2023 09:01 AM</td>
+                <td><strong>Alex R.</strong></td>
+                <td><span class="badge audit-badge-warning">Record Create</span></td>
+                <td>Created master project record Central Warehouse Expansion</td>
+                <td>PRJ-0899</td>
+                <td><span class="badge audit-badge-success">Success</span></td>
+              </tr>
+              <tr>
+                <td>Oct 22, 2023 11:30 AM</td>
+                <td><strong>Alex R.</strong></td>
+                <td><span class="badge audit-badge-blue">Report Gen</span></td>
+                <td>Generated Concrete Estimate Report (15.0 yd³ @ $2,100.00)</td>
+                <td>EST-1448</td>
+                <td><span class="badge audit-badge-success">Success</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const mixRates = { 1: 135, 2: 135 };
+    let currentStep = 3;
+
+    function navigate(pageName) {
+      const navItems = document.querySelectorAll('.nav-item');
+      navItems.forEach(item => item.classList.remove('active'));
+      
+      const targetNav = document.getElementById('nav-' + pageName);
+      if (targetNav) targetNav.classList.add('active');
+
+      const views = ['estimator', 'workflows', 'clients', 'reports', 'audit'];
+      views.forEach(view => {
+        const targetView = document.getElementById('view-' + view);
+        if (targetView) targetView.classList.remove('active');
+      });
+
+      const activeView = document.getElementById('view-' + pageName);
+      if (activeView) {
+        activeView.classList.add('active');
+      }
+
+      const pageTitles = {
+        estimator: "Estimating & Project Management Dashboard",
+        workflows: "Active Project Pipelines & Workflows",
+        clients: "K&M Client Management Directory",
+        reports: "Concrete Estimate Reports Log",
+        audit: "System Audit Trail & History Log"
+      };
+      document.getElementById('page-title').innerText = pageTitles[pageName];
+    }
+
+    function selectMix(rowNum, rate) {
+      mixRates[rowNum] = rate;
+      const blocks = document.querySelectorAll('.calculator-block');
+      const targetBlock = blocks[rowNum - 1];
+      targetBlock.querySelectorAll('.mix-card').forEach(card => card.classList.remove('selected'));
+      
+      let cardIdx = 0;
+      let mixName = "";
+      if (rate === 110) { cardIdx = 0; mixName = "Standard Mix"; }
+      else if (rate === 135) { cardIdx = 1; mixName = "High-Strength Mix"; }
+      else if (rate === 150) { cardIdx = 2; mixName = "Fiber-Reinforced"; }
+
+      targetBlock.querySelectorAll('.mix-card')[cardIdx].classList.add('selected');
+      document.getElementById('cost-' + rowNum).value = '$' + rate.toFixed(2);
+      
+      calculateFromDimensions(rowNum);
+      addAuditLog(`Alex R. changed Mix Design to ${mixName} (Est. Row #${rowNum})`, "Mix Select");
+    }
+
+    function onDimChange(rowNum) {
+      calculateFromDimensions(rowNum);
+    }
+
+    function calculateFromDimensions(rowNum) {
+      const len = parseFloat(document.getElementById('len-' + rowNum).value) || 0;
+      const wid = parseFloat(document.getElementById('wid-' + rowNum).value) || 0;
+      const dep = parseFloat(document.getElementById('dep-' + rowNum).value) || 0;
+      
+      if (len > 0 && wid > 0 && dep > 0) {
+        const baseVolume = (len * wid * dep) / 324;
+        const volumeWithWaste = baseVolume * 1.1;
+        
+        const roundedVol = Math.min(200, Math.max(0, parseFloat(volumeWithWaste.toFixed(1))));
+        document.getElementById('vol-range-' + rowNum).value = roundedVol;
+        updateVol(rowNum, roundedVol, false);
+      }
+    }
+
+    function updateVol(rowNum, val, fromSlider = true) {
+      document.getElementById('vol-val-' + rowNum).innerText = parseFloat(val).toFixed(1) + ' yd³';
+      
+      const rate = mixRates[rowNum];
+      const materials = val * rate;
+      const labor = val * 11.6883; 
+      const equip = val * 4.0909; 
+      const total = materials + labor + equip;
+
+      document.getElementById('tot-mat-' + rowNum).innerText = '$' + materials.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+      document.getElementById('tot-lab-' + rowNum).innerText = '$' + labor.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+      document.getElementById('tot-eq-' + rowNum).innerText = '$' + equip.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+      document.getElementById('tot-amount-' + rowNum).innerText = '$' + total.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    }
+
+    function setWorkflowStep(stepNum) {
+      currentStep = stepNum;
+      const stepper = document.getElementById('workflow-stepper-list');
+      const steps = stepper.querySelectorAll('.step-item');
+      
+      const percentages = { 1: 10, 2: 40, 3: 85, 4: 95, 5: 100 };
+      const stepNames = { 1: "Start", 2: "Site Prep", 3: "Estimating", 4: "Proposal", 5: "Scheduling" };
+      const progressPercent = percentages[stepNum];
+
+      steps.forEach((step, idx) => {
+        const currentIdx = idx + 1;
+        step.className = 'step-item';
+        
+        const iconContainer = step.querySelector('.step-icon');
+        iconContainer.innerHTML = '';
+
+        if (currentIdx < stepNum) {
+          step.classList.add('completed');
+          iconContainer.innerHTML = `<svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>`;
+        } else if (currentIdx === stepNum) {
+          step.classList.add('active');
+          if (stepNum === 3) {
+            iconContainer.innerHTML = `<div style="width: 4px; height: 4px; border-radius: 50%; background: var(--blue);"></div>`;
+            step.querySelector('.step-content').innerHTML = `
+              <span class="step-title">3. Estimating</span>
+              <div style="display: flex; align-items: center;">
+                <span class="step-date" id="step-percentage">85%</span>
+                <div class="step-progress-bar"><div class="step-progress-fill" id="step-fill-bar" style="width: 85%;"></div></div>
+              </div>
+            `;
+          } else if (stepNum === 1 || stepNum === 2) {
+            iconContainer.innerHTML = `<div style="width: 4px; height: 4px; border-radius: 50%; background: var(--blue);"></div>`;
+            step.querySelector('.step-content').innerHTML = `
+              <span class="step-title">${currentIdx}. ${stepNames[currentIdx]}</span>
+              <span class="step-date">Active</span>
+            `;
+          } else {
+            iconContainer.innerHTML = `<div style="width: 4px; height: 4px; border-radius: 50%; background: var(--blue);"></div>`;
+            step.querySelector('.step-content').innerHTML = `
+              <span class="step-title">${currentIdx}. ${stepNames[currentIdx]}</span>
+              <span class="step-date">${progressPercent}%</span>
+            `;
+          }
+        } else {
+          step.querySelector('.step-content').innerHTML = `
+            <span class="step-title">${currentIdx}. ${stepNames[currentIdx]}</span>
+            <span class="step-date">Upcoming</span>
+          `;
+        }
+      });
+
+      document.getElementById('overall-progress-title').innerText = progressPercent + '% Complete';
+      
+      const bars = document.getElementById('bar-chart-container').querySelectorAll('.chart-bar');
+      const heights = {
+        1: [25, 30, 20, 15, 10, 5, 8, 10],
+        2: [25, 45, 40, 35, 30, 20, 15, 20],
+        3: [25, 70, 50, 65, 75, 85, 55, 65],
+        4: [25, 70, 60, 80, 85, 90, 95, 92],
+        5: [30, 75, 70, 85, 90, 95, 100, 100]
+      };
+      
+      bars.forEach((bar, idx) => {
+        bar.style.height = heights[stepNum][idx] + '%';
+      });
+
+      addAuditLog(`Alex R. updated project status to Step #${stepNum} (${stepNames[stepNum]})`, "Status Update");
+    }
+
+    function addAuditLog(text, activityGroup = "Data Update") {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+      const dateStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+      const container1 = document.getElementById('audit-logs-container-1');
+      if (container1) {
+        const newLog = document.createElement('div');
+        newLog.className = 'audit-item';
+        newLog.innerHTML = `
+          <div class="audit-dot-col"><div class="audit-dot"></div></div>
+          <div class="audit-body">
+            <div class="audit-time">${dateStr}, ${timeStr}</div>
+            <div class="audit-desc"><strong>${text}</strong></div>
+          </div>
+        `;
+        container1.insertBefore(newLog, container1.firstChild);
+        if (container1.children.length > 5) {
+          container1.removeChild(container1.lastChild);
+        }
+      }
+
+      const tableBody = document.getElementById('full-audit-table-body');
+      if (tableBody) {
+        const badgeColors = {
+          "Report Gen": "audit-badge-blue",
+          "Data Update": "audit-badge-warning",
+          "Status Update": "audit-badge-warning",
+          "Mix Select": "audit-badge-blue"
+        };
+        const badgeColor = badgeColors[activityGroup] || "audit-badge-blue";
+
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+          <td>${dateStr} ${now.getFullYear()}, ${timeStr}</td>
+          <td><strong>Alex R.</strong></td>
+          <td><span class="badge ${badgeColor}">${activityGroup}</span></td>
+          <td>${text}</td>
+          <td>EST-1455</td>
+          <td><span class="badge audit-badge-success">Success</span></td>
+        `;
+        tableBody.insertBefore(newRow, tableBody.firstChild);
+      }
+    }
+
+    function setInitialValues() {
+      // Row 1
+      document.getElementById('vol-val-1').innerText = "38.5 yd³";
+      document.getElementById('vol-range-1').value = 38.5;
+      document.getElementById('tot-mat-1').innerText = "$4,590.00";
+      document.getElementById('tot-lab-1').innerText = "$450.00";
+      document.getElementById('tot-eq-1').innerText = "$157.50";
+      document.getElementById('tot-amount-1').innerText = "$5,197.50";
+      
+      // Row 2
+      document.getElementById('vol-val-2').innerText = "38.5 yd³";
+      document.getElementById('vol-range-2').value = 38.5;
+      document.getElementById('tot-mat-2').innerText = "$4,590.00";
+      document.getElementById('tot-lab-2').innerText = "$450.00";
+      document.getElementById('tot-eq-2').innerText = "$157.50";
+      document.getElementById('tot-amount-2').innerText = "$5,197.50";
+
+      document.getElementById('step-fill-bar').style.width = "85%";
+    }
+    
+    setInitialValues();
+
+    function triggerSave(rowNum) {
+      const vol = document.getElementById('vol-range-' + rowNum).value;
+      const total = document.getElementById('tot-amount-' + rowNum).innerText;
+      addAuditLog(`Alex R. generated Est. Report (${vol} yd³ @ ${total})`, "Report Gen");
+    }
+
+    function editProjectAlert() {
+      alert("Master Data Access: Loading K&M Concrete Construction client records...");
+    }
+  </script>
+</body>
+</html>

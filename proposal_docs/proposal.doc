@@ -1,0 +1,126 @@
+<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+<title>PROJECT PROPOSAL</title>
+<!--[if gte mso 9]>
+<xml>
+ <w:WordDocument>
+  <w:View>Print</w:View>
+  <w:Zoom>100</w:Zoom>
+  <w:DoNotOptimizeForBrowser/>
+ </w:WordDocument>
+</xml>
+<![endif]-->
+<style>
+@page {
+  size: 8.5in 11in;
+  margin: 1.0in 1.0in 1.0in 1.0in;
+  mso-header-margin: .5in;
+  mso-footer-margin: .5in;
+}
+body {
+  font-family: 'Arial', sans-serif;
+  font-size: 10.5pt;
+  color: #1A1A1A;
+  line-height: 1.5;
+}
+p.subtitle {
+  color: #646E78;
+  font-size: 10.5pt;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  margin: 0 0 4pt 0;
+  text-transform: uppercase;
+}
+h1 {
+  color: #1E60B4;
+  font-size: 20pt;
+  font-weight: 800;
+  margin: 0 0 20pt 0;
+  line-height: 1.2;
+}
+p.meta {
+  color: #646E78;
+  font-size: 9.5pt;
+  margin: 0 0 30pt 0;
+  line-height: 1.4;
+}
+h2 {
+  color: #1E60B4;
+  font-size: 13pt;
+  font-weight: bold;
+  margin: 20pt 0 6pt 0;
+  border-bottom: 1px solid #E5E7EB;
+  padding-bottom: 3pt;
+}
+p.content {
+  margin: 0 0 10pt 0;
+}
+ul {
+  margin: 0 0 12pt 0;
+  padding-left: 20pt;
+}
+li {
+  margin-bottom: 6pt;
+}
+.sig-block {
+  margin-top: 40pt;
+  font-size: 10pt;
+}
+</style>
+</head>
+<body>
+
+<p class="subtitle">Project Proposal</p>
+<h1>Estimating & Project Management Platform</h1>
+
+<p class="meta">
+<strong>Prepared For:</strong> K&M Concrete Construction Inc<br>
+<strong>Contact:</strong> Andy Kooiker (Owner)<br>
+<strong>Date:</strong> October 25, 2023<br>
+<strong>Status:</strong> Draft
+</p>
+
+<h2>1. Executive Summary</h2>
+<p class="content">
+K&M Concrete Construction Inc requires a dedicated, internal estimating and project management application. The objective is to replace disparate spreadsheets with a single, secure database workflow. This platform will enable estimators to calculate concrete volumes dynamically, track status stages, and maintain a reliable system audit trail.
+</p>
+
+<h2>2. Core Features</h2>
+<ul>
+  <li><strong>Concrete Volume Calculator:</strong> Dynamic calculation of concrete requirements in cubic yards (yd³) based on length, width, and depth parameters, with selectable mix designs.</li>
+  <li><strong>Workflow Stage Tracker:</strong> Visual progress pipeline representing stages from Initial Start, Site Prep, and Estimating to Proposal Sent and Scheduling.</li>
+  <li><strong>Client Master Data:</strong> A centralized repository of client contacts, site locations, and estimation histories to avoid disconnected record-keeping.</li>
+  <li><strong>System Audit Log:</strong> A secure, read-only event trail recording every estimation edit, mix change, and status update for operational accountability.</li>
+</ul>
+
+<h2>3. Proposed Technology Stack</h2>
+<ul>
+  <li><strong>Frontend:</strong> Next.js (React Framework) with Tailwind CSS for responsive desktop & mobile layout.</li>
+  <li><strong>Backend API:</strong> Node.js with Express for scalable business logic processing.</li>
+  <li><strong>Database:</strong> PostgreSQL for robust relational structures, transaction safety, and precise audit trails.</li>
+</ul>
+
+<h2>4. Delivery Phases</h2>
+<ul>
+  <li><strong>Phase 1: Foundation & API (Weeks 1 - 4):</strong> Database schema design, database setup, and core user authentication API modules.</li>
+  <li><strong>Phase 2: Estimating & Workflow (Weeks 5 - 8):</strong> Development of the mathematical estimation engine and workflow stage navigation controls.</li>
+  <li><strong>Phase 3: Client Portal & Logs (Weeks 9 - 12):</strong> Implementation of client master directories and secure audit logging tracking tables.</li>
+  <li><strong>Phase 4: QA & Deployment (Weeks 13 - 16):</strong> Rigorous testing, validation, cloud infrastructure setup, and team onboarding.</li>
+</ul>
+
+<div class="sig-block">
+  <h2>Authorization</h2>
+  <br>
+  <p>
+  ________________________________________&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;____________________<br>
+  <strong>Andy Kooiker (Owner, K&M Concrete)</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Date</strong>
+  </p>
+  <br><br>
+  <p>
+  ________________________________________&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;____________________<br>
+  <strong>Lead Software Architect</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Date</strong>
+  </p>
+</div>
+
+</body>
+</html>
